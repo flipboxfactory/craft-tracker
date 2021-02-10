@@ -36,18 +36,14 @@ Please see [License File](https://github.com/flipboxfactory/craft-tracker/blob/m
 
 ## Examples
 
-#### List Event Counts
+#### List Event Counts via RollUp object
 ```twig
 <ul>
-{% for event in craft.tracker.query
-    .addSelect(['COUNT(*) AS count', 'title'])
-    .groupBy(['event', 'entryId'])
-    .asArray(true)
-    .all()
+{% for rollUp in craft.tracker.rollUp.author(currentUser).all()
 %}
     <li>
-        <h3>{{ event.title }}</h3>
-        Hit Count: {{ event.count }}
+        <h3>{{ rollUp.entry.title }}</h3>
+        Hit Count: {{ rollUp.count }}
     </li>
 {% endfor %}
 </ul>
@@ -77,6 +73,15 @@ Please see [License File](https://github.com/flipboxfactory/craft-tracker/blob/m
 </ul>
 ```
 
+#### Record Event via TWIG Template
+```twig
+
+{# Basic 'Page View' type tracking #}
+{% do craft.tracker.track({entry: entry}) %}
+
+{# Explicitly set track attributes #}
+{% do craft.tracker.track({entry: entry, event: "Viewed::PDF"}) %}
+```
 
 #### Record Event (AJAX / JQuery)
 ```twig

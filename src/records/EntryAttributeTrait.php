@@ -8,10 +8,10 @@
 
 namespace flipbox\craft\tracker\records;
 
-use flipbox\craft\ember\records\ActiveRecordTrait;
-use flipbox\craft\tracker\Tracker;
 use craft\elements\Entry as EntryElement;
 use craft\records\Entry as EntryRecord;
+use flipbox\craft\ember\records\ActiveRecordTrait;
+use flipbox\craft\tracker\Tracker;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -62,7 +62,7 @@ trait EntryAttributeTrait
         if (null === ($id = $this->getAttribute('entryId'))) {
             return null;
         }
-        return (int) $id;
+        return (int)$id;
     }
 
     /**

@@ -13,6 +13,7 @@ use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\ElementAttributeTrait;
 use flipbox\craft\tracker\queries\TrackQuery;
 
+
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.1.0
@@ -30,11 +31,12 @@ class Track extends ActiveRecord
     use ElementAttributeTrait,
         EntryAttributeTrait;
 
+    const DEFAULT_EVENT = "View";
+
     /**
      * The table alias
      */
     const TABLE_ALIAS = 'tracker';
-
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
@@ -49,6 +51,28 @@ class Track extends ActiveRecord
         return Craft::createObject(TrackQuery::class, [get_called_class()]);
     }
 
+    /*******************************************
+     * EVENTS
+     *******************************************/
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        // If the default event is used, set the element as well
+        if ($this->event === self::DEFAULT_EVENT && !$this->getElement()) {
+            $this->setElement($this->getEntry());
+        }
+
+        // Auto set title (if not provided)
+        if (!$this->title && $this->getElement()) {
+            $this->title = $this->getElement()->title;
+        }
+
+        return parent::beforeSave($insert);
+    }
+
     /**
      * @return array
      */
@@ -59,6 +83,13 @@ class Track extends ActiveRecord
             $this->entryRules(),
             $this->elementRules(),
             [
+                [
+                    [
+                        'event'
+                    ],
+                    'default',
+                    'value' => self::DEFAULT_EVENT
+                ],
                 [
                     [
                         'entryId',

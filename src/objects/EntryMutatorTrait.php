@@ -6,16 +6,23 @@
  * @link       https://www.flipboxfactory.com/software/tracker/
  */
 
-namespace flipbox\craft\tracker\records;
+namespace flipbox\craft\tracker\objects;
 
 use Craft;
 use craft\elements\Entry;
 
-/** *
+/**
+ * This trait accepts both an Entry or and Entry Id and ensures that the both
+ * the Entry and the Id are in sync. If one changes (and does not match the other) it
+ * resolves (removes / updates) the other.
+ *
+ * In addition, this trait is primarily useful when a new Entry is set and saved; the Entry
+ * Id can be retrieved without needing to explicitly set the newly created Id.
+ *
  * @property Entry|null $entry
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 2.0.0
+ * @since 1.0.0
  */
 trait EntryMutatorTrait
 {
@@ -146,7 +153,7 @@ trait EntryMutatorTrait
 
     /**
      * @param mixed $entry
-     * @return Entry|null
+     * @return Entry|Entry|null
      */
     protected function verifyEntry($entry = null)
     {
@@ -160,13 +167,6 @@ trait EntryMutatorTrait
 
         if (is_numeric($entry)) {
             return Craft::$app->getEntries()->getEntryById($entry);
-        }
-
-        if (is_string($entry)) {
-            $element = Craft::$app->getElements()->getElementByUri($entry);
-            if ($element instanceof Entry) {
-                return $element;
-            }
         }
 
         return null;

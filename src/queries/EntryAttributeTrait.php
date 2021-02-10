@@ -10,8 +10,8 @@ namespace flipbox\craft\tracker\queries;
 
 use craft\db\Query;
 use craft\db\QueryAbortedException;
-use flipbox\craft\ember\helpers\QueryHelper;
 use craft\elements\Entry;
+use flipbox\craft\ember\helpers\QueryHelper;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

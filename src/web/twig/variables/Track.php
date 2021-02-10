@@ -8,11 +8,13 @@
 
 namespace flipbox\craft\tracker\web\twig\variables;
 
+use Craft;
+use craft\helpers\Json;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\craft\tracker\models\Settings;
+use flipbox\craft\tracker\queries\RollUpQuery;
 use flipbox\craft\tracker\queries\TrackQuery;
 use flipbox\craft\tracker\records\Track as TrackRecord;
-
 use flipbox\craft\tracker\Tracker;
 use yii\di\ServiceLocator;
 
@@ -38,6 +40,65 @@ class Track extends ServiceLocator
         );
 
         return $query;
+    }
+
+    /**
+     * Query tracker records via 'craft.tracker.rollUp'
+     *
+     * @param array $config
+     * @return RollUpQuery
+     */
+    public function getRollUp(array $config = []): RollUpQuery
+    {
+        $query = new RollUpQuery();
+
+        QueryHelper::configure(
+            $query,
+            $config
+        );
+
+        return $query;
+    }
+
+    /**
+     * Track an event via 'craft.tracker.track'
+     *
+     * @param array $config
+     * @return TrackQuery
+     */
+    public function track(array $config = []): ?TrackRecord
+    {
+        $record = new TrackRecord();
+
+        $record->setAttributes($config);
+
+        // Add request data
+        $record->userAgent = Craft::$app->getRequest()->getUserAgent();
+        $record->remoteIp = Craft::$app->getRequest()->getRemoteIP();
+        $record->clientOs = Craft::$app->getRequest()->getClientOs();
+
+        try {
+            if (!$record->save()) {
+                Tracker::error(
+                    sprintf(
+                        "Failed to save track call due to the following errors: %s",
+                        Json::encode($record->errors()
+                        )
+                    )
+                );
+
+                return null;
+            }
+        } catch (\Exception $error) {
+            Tracker::error(
+                sprintf(
+                    "An exception was caught while to record a track event: %s",
+                    $error->getMessage()
+                )
+            );
+        }
+
+        return $record;
     }
 
     /**
