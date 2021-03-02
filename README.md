@@ -108,6 +108,7 @@ Please see [License File](https://github.com/flipboxfactory/craft-tracker/blob/m
             console.log("Begin track event", data);
 
             $.ajax({
+                async: false,
                 type: "POST",
                 url: "{{ actionUrl('/tracker/track/event') }}",
                 data: JSON.stringify(data),

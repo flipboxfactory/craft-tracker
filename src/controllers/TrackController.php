@@ -21,6 +21,8 @@ use flipbox\craft\tracker\actions\TrackEvent;
  */
 class TrackController extends AbstractController
 {
+    protected $allowAnonymous = ['event' => self::ALLOW_ANONYMOUS_LIVE];
+
     /**
      * @return array
      */
