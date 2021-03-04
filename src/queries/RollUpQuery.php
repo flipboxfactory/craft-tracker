@@ -36,7 +36,15 @@ class RollUpQuery extends Query
     /**
      * @inheritdoc
      */
-    public $select = ['COUNT(*) AS count', 'event', 'title', 'entryId', 'elementId'];
+    public $select = [
+        'COUNT(*) AS count',
+        'MIN(tracker.dateCreated) as dateCreated',
+        'MAX(tracker.dateUpdated) as dateUpdated',
+        'event',
+        'title',
+        'entryId',
+        'elementId'
+    ];
 
     /**
      * @inheritdoc

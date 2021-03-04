@@ -34,4 +34,9 @@ class RollUp extends BaseObject
      * @var string
      */
     public $event;
+
+
+    public $dateUpdated;
+
+    public $dateCreated;
 }
